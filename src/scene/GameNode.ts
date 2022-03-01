@@ -4,6 +4,7 @@ import UIConfig from "../manager/UIConfig";
 import UIMar from "../manager/UIMar";
 import BtnPconfig from "../manager/BtnPConfig";
 import BtnSizeconfig from "../manager/BtnSConfig";
+import BtnLevelconfig from "../manager/BtnLevelConfig";
 //GameNode
 const { ccclass, property } = cc._decorator;
 
@@ -15,9 +16,6 @@ export default class GameNode extends cc.Component {
     @property(cc.SpriteFrame)
     sp2: cc.SpriteFrame = null;
 
-    @property
-    text: string = 'hello';
-
     returnBtn: cc.Node;//返回按钮
     tiShiBtn: cc.Node;//提示按钮
     timeLab: cc.Node;//倒计时
@@ -25,6 +23,7 @@ export default class GameNode extends cc.Component {
     levelLab: cc.Node;//关卡lab
     upNode: cc.Node;//上图
     downNode: cc.Node;//下图
+    messageBox:cc.Node;//messageBox  游戏结算
     df1:cc.Node;
     df2:cc.Node;
     df3:cc.Node;
@@ -43,11 +42,15 @@ export default class GameNode extends cc.Component {
     star4:cc.Node;
     star5:cc.Node;
     star6:cc.Node;
-    pointNum:number =0;
-    onLoad() {
+    pointNum:number =0;  //点击次数
+    trueNum:number=0;    //点击正确的次数
+    level:number=0;      //关卡数
+    levelTrueNum:number=0;//关卡不同点的数量
+
+    onLoad() {    
         this.initUI();
         this.initFunc();
-        //this.initBtn();
+        this.level =DataMar.getInstance().dataObj.level % 10;
     }
 
     start() {
@@ -61,7 +64,10 @@ export default class GameNode extends cc.Component {
         this.markNode = this.node.getChildByName("markNode")
         this.upNode = this.node.getChildByName("upNode")
         this.downNode = this.node.getChildByName("downNode")
-        
+        this.messageBox = this.node.getChildByName("di")
+        this.messageBox.active=false;
+        this.levelLab=this.node.getChildByName("levelLab");
+
         this.df1= this.node.getChildByName("downNode").getChildByName("df1");
         this.quan1= this.node.getChildByName("downNode").getChildByName("df1").getChildByName("quan");
         this.quan1.active=false;
@@ -95,72 +101,169 @@ export default class GameNode extends cc.Component {
         }, this)
         Tools.btnAddClick(this.df1,function(){
             this.pointNum++;
-            this.df1.getChildByName("quan").active=true;
-            this.changeMarkNode_Highlights();
+            if(this.pointNum<=6){
+                this.df1.getChildByName("quan").active=true;
+                this.changeMarkNode_Highlights();
+                this.trueNum++;
+            }else{
+                this.showMessageBox(false);
+            }
+            if(this.levelTrueNum==this.trueNum){
+                this.showMessageBox(true)
+            }
         },this)
         Tools.btnAddClick(this.df2,function(){
             this.pointNum++;
-            this.df2.getChildByName("quan").active=true;
-            this.changeMarkNode_Highlights();
+            if(this.pointNum<=6){
+                this.df2.getChildByName("quan").active=true;
+                this.changeMarkNode_Highlights();
+                this.trueNum++;
+            }else{
+                this.showMessageBox(false);
+            }
+            if(this.levelTrueNum==this.trueNum){
+                this.showMessageBox(true)
+            }
+            
         },this)
         Tools.btnAddClick(this.df3,function(){
             this.pointNum++;
-            this.df3.getChildByName("quan").active=true;
-            this.changeMarkNode_Highlights();
+            if(this.pointNum<=6){
+                this.df3.getChildByName("quan").active=true;
+                this.changeMarkNode_Highlights();
+                this.trueNum++;
+            }else{
+                this.showMessageBox(false);
+            }
+            if(this.levelTrueNum==this.trueNum){
+                this.showMessageBox(true)
+            }
+            
         },this)
         Tools.btnAddClick(this.df4,function(){
             this.pointNum++;
-            this.df4.getChildByName("quan").active=true;
-            this.changeMarkNode_Highlights();
+            if(this.pointNum<=6){
+                this.df4.getChildByName("quan").active=true;
+                this.changeMarkNode_Highlights();
+                this.trueNum++;
+            }else{
+                this.showMessageBox(false);
+            }
+            if(this.levelTrueNum==this.trueNum){
+                this.showMessageBox(true)
+            }
+            
         },this)
         Tools.btnAddClick(this.df5,function(){
             this.pointNum++;
-            this.df5.getChildByName("quan").active=true;
-            this.changeMarkNode_Highlights();
+            if(this.pointNum<=6){
+                this.df5.getChildByName("quan").active=true;
+                this.changeMarkNode_Highlights();
+                this.trueNum++;
+            }else{
+                this.showMessageBox(false);
+            }
+            if(this.levelTrueNum==this.trueNum){
+                this.showMessageBox(true)
+            }
+            
         },this)
         Tools.btnAddClick(this.df6,function(){
             this.pointNum++;
-            this.df6.getChildByName("quan").active=true;
-            this.changeMarkNode_Highlights();
+            if(this.pointNum<=6){
+                this.df6.getChildByName("quan").active=true;
+                this.changeMarkNode_Highlights();
+                this.trueNum++;
+            }else{
+                this.showMessageBox(false);
+            }
+            if(this.levelTrueNum==this.trueNum){
+                this.showMessageBox(true)
+            }
         },this)
+        Tools.btnAddClick(this.downNode,function(){
+            this.pointNum++;
+            if(this.pointNum<=6){
+                this.changeMarkNode_cha();
+            }else{
+                this.showMessageBox(false);
+                this.messageBox.getChildByName("next").active=false;
+            }
+        },this)
+        Tools.btnAddClick(this.messageBox.getChildByName("Close"), function () {
+            UIMar.getInstance().closeCommonUI(UIConfig.gameNode.Name);
+        }, this)
+        Tools.btnAddClick(this.messageBox.getChildByName("queding"), function () {
+            UIMar.getInstance().closeCommonUI(UIConfig.gameNode.Name);
+        }, this)
+        Tools.btnAddClick(this.messageBox.getChildByName("Fanhui"), function () {
+            UIMar.getInstance().closeCommonUI(UIConfig.gameNode.Name);
+        }, this)
+        Tools.btnAddClick(this.messageBox.getChildByName("next"), function () {
+            this.level++;
+            this.initGame();
+        }, this)
     }
 
     initGame() {
         let self = this;
-        let dataObj = DataMar.getInstance().dataObj;
+        //初始化数据
+        this.pointNum=0;
+        this.trueNum=0;
+        let msg = "level" + this.level;
+        this.levelTrueNum=BtnLevelconfig[msg].star;
         //换图
-        let str = dataObj.level % 10
-        
-        
-        cc.loader.loadRes("guanQia/guan" + str + "/0.png", cc.SpriteFrame, function (err, res) {
-            if (err) {
-                cc.error(err.message || err);
-                return;
-            }
-            Tools.setNodeSpriteFrame(self.upNode, res)
-        });
-        cc.loader.loadRes("guanQia/guan" + str + "/1.png", cc.SpriteFrame, function (err, res) {
+        cc.loader.loadRes("guanQia/guan1/" + this.level + ".png", cc.SpriteFrame, function (err, res) {
             if (err) {
                 cc.error(err.message || err);
                 return;
             }
             Tools.setNodeSpriteFrame(self.downNode, res)
         });
-        // this.df1.active=false;
-        // this.df2.active=false;
-        // this.df3.active=false;
+        this.initBtn();
+        let path="";
+        switch(this.level){
+            case 1:
+                path = "第一关";
+                break;
+            case 2:
+                path = "第二关";
+                break;
+            case 3:
+                path = "第三关";
+                break;
+            case 4:
+                path = "第四关";
+                break;
+            case 5:
+                path = "第五关";
+                break;
+            case 6:
+                path = "第六关";
+                break;
+            case 7:
+                path = "第七关";
+                break;
+            case 8:
+                path = "第八关";
+                break;
+            case 9:
+                path = "第九关";
+                break;
+        }
+        this.levelLab.getComponent(cc.Label).string=path;
+    
     }
-    // update (dt) {}
 
     initBtn(){
-        this.pointNum=0;
+        
         let self = this;
-        // this.star1.active=false;
-        // this.star2.active=false;
-        // this.star3.active=false;
-        this.star4.active=false;
-        this.star5.active=false;
-        this.star6.active=false;
+        this.star1.active=true;
+        this.star2.active=true;
+        this.star3.active=true;
+        this.star4.active=true;
+        this.star5.active=true;
+        this.star6.active=true;
 
         this.quan1.active=false;
         this.quan2.active=false;
@@ -169,15 +272,7 @@ export default class GameNode extends cc.Component {
         this.quan5.active=false;
         this.quan6.active=false;
 
-        let dataObj = DataMar.getInstance().dataObj;
-        let str=dataObj.level %10;
-        cc.loader.loadRes("guanQia/guan1/" + str + ".png", cc.SpriteFrame, function (err, res) {
-            if (err) {
-                cc.error(err.message || err);
-                return;
-            }
-            Tools.setNodeSpriteFrame(self.downNode, res)
-        });
+        let str = this.level;
 
         for(let i=1;i<7;i++){
             let dfpath ="df" + i;
@@ -188,15 +283,17 @@ export default class GameNode extends cc.Component {
             this[dfpath].high=   BtnSizeconfig[levelPath][dfpath].high;
             this[dfpath].position = BtnPconfig[levelPath][dfpath];
             //console.log(dfpath,this[dfpath].width,this[dfpath].high,this[dfpath].position);
-            cc.loader.loadRes("atlas/GameNode.plist/Grey point.png",cc.SpriteFrame,function(err,res){
+            cc.loader.loadRes("atlas/GameNode.plist",cc.SpriteAtlas,function(err,res){
                 if (err) {
                     cc.error(err.message || err);
                     return;
                 }
-                Tools.setNodeSpriteFrame(starNode, res)
+                Tools.setNodeSpriteAtlas(starNode, res,"Grey point")
             })
             //starNode.getComponent(cc.Sprite).SpriteFrame=this.sp1;
         }
+
+        this.messageBox.active=false;
         
     }
 
@@ -214,5 +311,35 @@ export default class GameNode extends cc.Component {
             Tools.setNodeSpriteAtlas(temp, res,"Highlights")
         });
     }
+
+    changeMarkNode_cha(){
+        let self=this;
+        let starPath = "star" + this.pointNum;
+        let temp = this[starPath];
+        
+        //temp.getComponent(cc.Sprite).spriteFrame=this.sp2;
+        cc.loader.loadRes("atlas/GameNode.plist", cc.SpriteAtlas, function (err, res) {
+            if (err) {
+                cc.error(err.message || err);
+                return;
+            }
+            Tools.setNodeSpriteAtlas(temp, res,"cha")
+        });
+    }
+
+    showMessageBox(isVec:boolean){
+        this.messageBox.active=true;
+        let msg = "您失败了！！！";
+        if(isVec){
+            msg = "您通关了！！！";
+        }
+        this.messageBox.getChildByName("label2").getComponent(cc.Label).string= msg;
+        if(this.level>=8){
+            this.messageBox.getChildByName("next").active=false;
+        }else{
+            this.messageBox.getChildByName("next").active=true;
+        }
+    }
+
 
 }

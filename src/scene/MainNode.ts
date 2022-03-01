@@ -81,7 +81,7 @@ export default class MainNode extends cc.Component {
         this.updateUI();
     }
 
-    initFunc() {
+    initFunc() { 
         let setNode = this.LeftNode.getChildByName("setNodeBtn");
         let DengJiBtn = this.LeftNode.getChildByName("DengJiBtn");
         let LuckyBtn = this.LeftNode.getChildByName("LuckyBtn");
